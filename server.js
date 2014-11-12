@@ -2,11 +2,16 @@
 //executed when gps2zip is required
 var fs = require('fs');
 var zips = [];
+var zipsObj = { }; 
 try {
 	var data = fs.readFileSync(__dirname + '/zips.json', 'ascii');
 
 	//zips is a global defined up top
 	zips = JSON.parse(data);
+
+	for(var i=0; i < zips.length; ++i) { 
+		zipsObj[zips[i]['zip code']] = { lat: zips[i].latitude, lon: zips[i].longitude }; 
+	}
 }
 catch (err) {
 	console.error("There was an error opening the zip code file:");
@@ -36,3 +41,12 @@ exports.gps2zip = function(lat, lon){
 	}
 	return zips[5];
 }
+
+exports.zip2gps = function(zip) { 
+	if(typeof zip != 'undefined') { 
+		if(typeof zipsObj[zip] != 'undefined') { 
+			return zipsObj[zip]; 
+		}
+	}
+	return false; 
+}; 
