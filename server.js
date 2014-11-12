@@ -42,10 +42,21 @@ exports.gps2zip = function(lat, lon){
 	return zips[5];
 }
 
-exports.zip2gps = function(zip) { 
+exports.zip2gps = function(zip,strict) { 
+	strict = (typeof strict != 'undefined') ? strict : false; 
 	if(typeof zip != 'undefined') { 
 		if(typeof zipsObj[zip] != 'undefined') { 
 			return zipsObj[zip]; 
+		}
+	}
+	if(!strict) { 
+		for(var i=0; i < 3; ++i) { 
+			var target = parseInt(zip.toString().substring(0,4-i)); 
+			for(var j=0; j < zips.length; ++j) { 
+				if(zips[j]['zip code'].toString().indexOf(target) == 0) { 
+					return zipsObj[zips[j]['zip code']]; 
+				}
+			}
 		}
 	}
 	return false; 
